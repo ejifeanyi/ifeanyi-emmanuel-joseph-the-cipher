@@ -1,0 +1,27 @@
+# Rebuilds the site so new Notion content goes live.
+# Runs every 6 hours, and any time you press "Run workflow" on GitHub
+# (Actions → Publish from Notion → Run workflow; works in the GitHub app too).
+#
+# Needs one repository secret: CLOUDFLARE_DEPLOY_HOOK
+# (Cloudflare → your Pages project → Settings → Builds → Deploy hooks → Add).
+
+name: Publish from Notion
+
+on:
+  schedule:
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger a Cloudflare Pages build
+        env:
+          HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "CLOUDFLARE_DEPLOY_HOOK is not set yet. See the README."
+            exit 1
+          fi
+          curl -fsS -X POST "$HOOK"
