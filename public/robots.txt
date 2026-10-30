@@ -5,4 +5,4 @@ Disallow: /vault
 # the cipher was here.
 # some doors only open from the inside. the key is where he's from.
 
-Sitemap: https://ifeanyiemmanueljoseph.com/sitemap.xml
+Sitemap: https://ifeanyiemmanuel.com/sitemap.xml

@@ -1,4 +1,4 @@
-# ifeanyiemmanueljoseph.com
+# ifeanyiemmanuel.com
 
 An archive of becoming. The personal site of Ifeanyi Emmanuel Joseph, and its other reading, The Cipher.
 
@@ -68,7 +68,7 @@ To add a secret, add an id and label to `secrets` and call `discover("your-id")`
 1. Push this folder to a GitHub repo.
 2. Cloudflare dashboard → Workers & Pages → Create → Pages → connect the repo.
 3. Build command `npm run build`, output directory `out`.
-4. Add the custom domain `ifeanyiemmanueljoseph.com`.
+4. Add the custom domain `ifeanyiemmanuel.com`.
 5. Under Settings → Variables and secrets, add `NOTION_TOKEN`.
 6. Under Settings → Builds → Deploy hooks, create a hook, then add its URL to the GitHub repo as the secret `CLOUDFLARE_DEPLOY_HOOK` (Settings → Secrets and variables → Actions).
 7. For the contact form: create a free Resend account, verify the domain, then add `RESEND_API_KEY`, `CONTACT_TO` and `CONTACT_FROM` under Settings → Variables and secrets.

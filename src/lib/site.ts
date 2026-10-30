@@ -4,7 +4,7 @@ export const site = {
   name: "Ifeanyi Emmanuel Joseph",
   shortName: "Ifeanyi E. Joseph",
   alterEgo: "The Cipher",
-  url: "https://ifeanyiemmanueljoseph.com",
+  url: "https://ifeanyiemmanuel.com",
   description:
     "An archive of becoming. Software engineer in Lagos, building products with founders and writing down what the work teaches.",
 

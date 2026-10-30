@@ -4,7 +4,7 @@
 // Set these in Cloudflare → your Pages project → Settings → Variables and secrets:
 //   RESEND_API_KEY   your Resend API key (keep it secret)
 //   CONTACT_TO       the inbox that receives messages
-//   CONTACT_FROM     a sender on your verified Resend domain, e.g. "Site <site@ifeanyiemmanueljoseph.com>"
+//   CONTACT_FROM     a sender on your verified Resend domain, e.g. "Site <site@ifeanyiemmanuel.com>"
 //
 // This file only runs on Cloudflare, not during `npm run dev`.
 
@@ -49,7 +49,7 @@ export async function onRequestPost({ request, env }: Ctx): Promise<Response> {
       from: env.CONTACT_FROM,
       to: [env.CONTACT_TO],
       reply_to: email,
-      subject: `New message from ${name} (ifeanyiemmanueljoseph.com)`,
+      subject: `New message from ${name} (ifeanyiemmanuel.com)`,
       text: `Name: ${name}\nEmail: ${email}\nTimeline: ${timeline || "not given"}\n\n${message}`,
     }),
   });
