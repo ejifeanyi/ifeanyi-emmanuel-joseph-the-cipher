@@ -20,7 +20,7 @@ export const site = {
     instagram: "",
     tiktok: "",
     x: "",
-    github: "",
+    github: "https://github.com/ejifeanyi",
   },
 
   bookingUrl: "https://calendar.app.google/HURrFXc5dp8MhMMg6",
