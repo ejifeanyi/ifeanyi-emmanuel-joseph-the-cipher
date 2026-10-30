@@ -17,10 +17,10 @@ export function Header() {
   const { setMenuOpen, setPaletteOpen, keyring, setKeyringOpen } = useSite();
   return (
     <header className="sticky top-0 z-50 border-b border-rule bg-page/90 backdrop-blur">
-      <div className="wrap flex h-[68px] items-center justify-between gap-4 md:h-[76px]">
-        <Link href="/" className="flex items-center gap-3 text-ink" aria-label={`${site.name}, home`}>
+      <div className="wrap flex h-[64px] items-center justify-between gap-3 md:h-[76px] md:gap-4">
+        <Link href="/" className="flex min-w-0 shrink items-center gap-2.5 whitespace-nowrap text-ink sm:gap-3" aria-label={`${site.name}, home`}>
           <Glyph size={22} />
-          <span className="t-h3 !text-[17px] md:!text-[19px]">
+          <span className="t-h3 truncate !text-[16px] sm:!text-[17px] md:!text-[19px]">
             <Dual i={<><span className="hidden sm:inline">{site.name}</span><span className="sm:hidden">{site.shortName}</span></>} c="the cipher" />
           </span>
         </Link>
@@ -36,7 +36,7 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2 md:gap-3">
+        <div className="flex shrink-0 items-center gap-2 md:gap-3">
           <button
             type="button"
             onClick={() => setPaletteOpen(true)}
@@ -50,7 +50,7 @@ export function Header() {
             <button
               type="button"
               onClick={() => setKeyringOpen(true)}
-              className="c-only rounded-full bg-camwood-soft px-3 py-1.5 font-mono text-[11px] text-camwood"
+              className="c-only hidden whitespace-nowrap rounded-full bg-camwood-soft px-3 py-1.5 font-mono text-[11px] text-camwood sm:inline-block"
               aria-label={`Keyring: ${keyring.length} found`}
             >
               ◇ {keyring.length} of ?
@@ -60,7 +60,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setMenuOpen(true)}
-            className="text-[14px] font-medium text-ink lg:hidden"
+            className="whitespace-nowrap text-[14px] font-medium text-ink lg:hidden"
             aria-label="Open the rooms menu"
           >
             <Dual i="Menu" c="/rooms" />

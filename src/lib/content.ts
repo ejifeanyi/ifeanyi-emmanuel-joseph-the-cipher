@@ -10,9 +10,25 @@ import { formatDate } from "@/lib/labels";
 // With NOTION_TOKEN set, content comes from Notion at build time.
 // Without it, the local files in src/content are used.
 
-let entriesPromise: Promise<Entry[]> | null = null;
-let nowPromise: Promise<NowData> | null = null;
-let storyPromise: Promise<Chapter[]> | null = null;
+// During a build, Notion is read once and reused across every page.
+// In `npm run dev`, it is re-read after a few seconds, so refreshing the
+// browser shows Notion edits without restarting. A failed read is never kept.
+const DEV_REFRESH_MS = process.env.NODE_ENV === "development" ? 5_000 : Infinity;
+
+function cached<T>(load: () => Promise<T>): () => Promise<T> {
+  let promise: Promise<T> | null = null;
+  let loadedAt = 0;
+  return () => {
+    if (!promise || Date.now() - loadedAt > DEV_REFRESH_MS) {
+      loadedAt = Date.now();
+      promise = load().catch((err) => {
+        promise = null;
+        throw err;
+      });
+    }
+    return promise;
+  };
+}
 
 function sortEntries(list: Entry[]) {
   return [...list].sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : b.catalog.localeCompare(a.catalog)));
@@ -22,10 +38,9 @@ export function contentSource() {
   return notionEnabled() ? "notion" : "local";
 }
 
-export function getEntries(): Promise<Entry[]> {
-  entriesPromise ??= (notionEnabled() ? fetchEntries() : Promise.resolve(localEntries)).then(sortEntries);
-  return entriesPromise;
-}
+export const getEntries: () => Promise<Entry[]> = cached(() =>
+  (notionEnabled() ? fetchEntries() : Promise.resolve(localEntries)).then(sortEntries),
+);
 
 export async function getEntriesByRoom(room: RoomSlug) {
   return (await getEntries()).filter((e) => e.room === room);
@@ -39,15 +54,13 @@ export async function getEntryByCatalog(catalog: string) {
   return (await getEntries()).find((e) => e.catalog === catalog);
 }
 
-export function getNow(): Promise<NowData> {
-  nowPromise ??= notionEnabled() ? fetchNow() : Promise.resolve(localNow);
-  return nowPromise;
-}
+export const getNow: () => Promise<NowData> = cached(() =>
+  notionEnabled() ? fetchNow() : Promise.resolve(localNow),
+);
 
-export function getStory(): Promise<Chapter[]> {
-  storyPromise ??= notionEnabled() ? fetchStory() : Promise.resolve(localChapters);
-  return storyPromise;
-}
+export const getStory: () => Promise<Chapter[]> = cached(() =>
+  notionEnabled() ? fetchStory() : Promise.resolve(localChapters),
+);
 
 /** Rooms with the parts that can be counted kept up to date automatically. */
 export async function getRooms(): Promise<Room[]> {

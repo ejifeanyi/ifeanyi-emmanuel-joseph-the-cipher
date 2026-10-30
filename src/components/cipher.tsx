@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useSite } from "@/components/SiteProvider";
 import { scramble } from "@/lib/decode";
 import { fragments, secrets } from "@/content/secrets";
@@ -17,7 +17,7 @@ export function DecodeToggle({ compact = false }: { compact?: boolean }) {
         type="button"
         onClick={() => setMode(m)}
         aria-pressed={active}
-        className={`rounded-full ${compact ? "px-2.5" : "px-3.5"} py-1.5 text-[12px] leading-none transition-colors ${
+        className={`whitespace-nowrap rounded-full ${compact ? "px-2 sm:px-2.5" : "px-3.5"} py-1.5 ${compact ? "text-[11px] sm:text-[12px]" : "text-[12px]"} leading-none transition-colors ${
           m === "cipher" ? "font-mono" : "font-sans"
         } ${active ? "bg-camwood text-on-accent" : "text-ink-2 hover:text-ink"}`}
       >
@@ -110,6 +110,29 @@ export function Redacted({ text, id, className = "" }: { text: string; id?: stri
 export function CipherNote({ text, id, size = "1em" }: { text: string; id?: string; size?: string }) {
   const { discover } = useSite();
   const [open, setOpen] = useState(false);
+  const noteRef = useRef<HTMLSpanElement>(null);
+  const [shift, setShift] = useState(0);
+
+  // Keep the note on screen: if it would run past either edge, slide it back in.
+  useLayoutEffect(() => {
+    if (!open || !noteRef.current) return setShift(0);
+    const place = () => {
+      const el = noteRef.current;
+      if (!el) return;
+      el.style.translate = "";
+      const r = el.getBoundingClientRect();
+      const gutter = 16;
+      const vw = document.documentElement.clientWidth;
+      let dx = 0;
+      if (r.right > vw - gutter) dx = vw - gutter - r.right;
+      if (r.left + dx < gutter) dx = gutter - r.left;
+      setShift(dx);
+    };
+    place();
+    window.addEventListener("resize", place);
+    return () => window.removeEventListener("resize", place);
+  }, [open]);
+
   return (
     <span className="relative inline-block align-baseline">
       <button
@@ -127,8 +150,10 @@ export function CipherNote({ text, id, size = "1em" }: { text: string; id?: stri
       </button>
       {open && (
         <span
+          ref={noteRef}
           role="note"
-          className="rise absolute left-0 top-full z-20 mt-2 block w-[min(320px,80vw)] rounded-lg bg-[#0e0b0a] p-4 text-left font-mono text-[13px] leading-relaxed tracking-normal text-[#f2e9e1] normal-case shadow-xl"
+          style={{ translate: shift ? `${shift}px 0` : undefined }}
+          className="rise absolute left-0 top-full z-20 mt-2 block w-[min(320px,calc(100vw-32px))] rounded-lg bg-[#0e0b0a] p-4 text-left font-mono text-[13px] leading-relaxed tracking-normal text-[#f2e9e1] normal-case shadow-xl"
         >
           <span className="mb-1 block text-[11px] text-[#a3958a]">◇ the cipher</span>
           {text}

@@ -9,7 +9,7 @@ import { Dual } from "@/components/Dual";
 import { rooms, laterRooms } from "@/content/rooms";
 
 export function RoomsMenu({ nowLine }: { nowLine: { i: string; c: string } }) {
-  const { menuOpen, setMenuOpen, setPaletteOpen } = useSite();
+  const { menuOpen, setMenuOpen, setPaletteOpen, keyring, setKeyringOpen } = useSite();
   const pathname = usePathname();
 
   useEffect(() => setMenuOpen(false), [pathname, setMenuOpen]);
@@ -33,9 +33,24 @@ export function RoomsMenu({ nowLine }: { nowLine: { i: string; c: string } }) {
           <p className="t-label text-ink-2">
             <Dual i={`The rooms · ${rooms.length} open`} c={`ls /rooms · ${rooms.length} open`} />
           </p>
-          <button type="button" onClick={() => setMenuOpen(false)} className="t-label text-ink hover:text-camwood">
-            Close ✕
-          </button>
+          <div className="flex items-center gap-4">
+            {keyring.length > 0 && (
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setKeyringOpen(true);
+                }}
+                className="c-only whitespace-nowrap rounded-full bg-camwood-soft px-3 py-1.5 font-mono text-[11px] text-camwood sm:!hidden"
+                aria-label={`Keyring: ${keyring.length} found`}
+              >
+                ◇ {keyring.length} of ?
+              </button>
+            )}
+            <button type="button" onClick={() => setMenuOpen(false)} className="t-label whitespace-nowrap text-ink hover:text-camwood">
+              Close ✕
+            </button>
+          </div>
         </div>
 
         <ul className="grid gap-x-16 md:grid-cols-2">
